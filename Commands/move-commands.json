@@ -1,0 +1,59 @@
+{
+    "commands": [
+        {
+            "type": "move",
+            "params": {
+                "x": 1000,
+                "y": 1000,
+                "z": 0,
+                "speed": 100,
+                "acceleration": 50
+            },
+            "description": "Move to starting position"
+        },
+        {
+            "type": "move",
+            "params": {
+                "x": 1000,
+                "y": 2000,
+                "z": 0,
+                "speed": 100,
+                "acceleration": 50
+            },
+            "description": "Move to second corner"
+        },
+        {
+            "type": "move",
+            "params": {
+                "x": 2000,
+                "y": 2000,
+                "z": 0,
+                "speed": 120,
+                "acceleration": 60
+            },
+            "description": "Move to third corner"
+        },
+        {
+            "type": "move",
+            "params": {
+                "x": 2000,
+                "y": 1000,
+                "z": 0,
+                "speed": 100,
+                "acceleration": 50
+            },
+            "description": "Move to fourth corner"
+        },
+        {
+            "type": "move",
+            "params": {
+                "x": 1000,
+                "y": 1000,
+                "z": 0,
+                "speed": 80,
+                "acceleration": 40
+            },
+            "description": "Return to starting position"
+        }
+    ]
+}

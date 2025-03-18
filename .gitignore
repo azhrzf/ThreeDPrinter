@@ -1,0 +1,40 @@
+# Ignore Visual Studio specific files
+.vs/
+
+# Ignore build outputs
+bin/
+obj/
+out/
+
+# User-specific files
+*.user
+*.suo
+*.vsp
+*.vspx
+*.vspscc
+*.vssscc
+
+# Ignore Rider/JetBrains files
+.idea/
+*.sln.iml
+
+# Ignore logs and temporary files
+logs/
+*.log
+*.tlog
+
+# Ignore package manager directories
+packages/
+node_modules/
+
+# Ignore build artifacts
+project.lock.json
+project.assets.json
+
+# Ignore secrets and configuration
+secrets.json
+appsettings.json
+appsettings.Development.json
+
+# Ignore ReSharper files
+_ReSharper.Caches/
