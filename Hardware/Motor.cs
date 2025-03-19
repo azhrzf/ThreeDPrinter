@@ -1,12 +1,12 @@
-namespace ThreeDimensionPrinter
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using ThreeDimensionPrinter.Interfaces;
+
+namespace ThreeDimensionPrinter.Hardware
 {
     public class Motor : IMotor
     {
-        // Events
-        public event EventHandler<EventArgs> MoveStarted;
-        public event EventHandler<EventArgs> MoveDone;
-        public event EventHandler<EventArgs> MotorError;
-
         // Properties
         public string Name { get; private set; }
         public int Position { get; private set; } // In counts
@@ -17,6 +17,11 @@ namespace ThreeDimensionPrinter
         public bool IsEnabled { get; private set; }
         public bool IsMoving { get; private set; }
         public bool HasError { get; private set; }
+
+        // Events
+        public event EventHandler<EventArgs> MoveStarted;
+        public event EventHandler<EventArgs> MoveDone;
+        public event EventHandler<EventArgs> MotorError;
 
         public Motor(string name)
         {
@@ -69,12 +74,28 @@ namespace ThreeDimensionPrinter
             Acceleration = accel;
 
             Console.WriteLine($"{Name} moving to {destination} at speed {speed}, acceleration {accel}");
+
+            try
+            {
+
+            }
+            catch (TaskCanceledException)
+            {
+                Console.WriteLine($"{Name} movement cancelled");
+            }
+            finally
+            {
+                IsMoving = false;
+                // Add Event to notify move done
+            }
         }
 
         public void Stop()
         {
             if (IsMoving)
             {
+                Console.WriteLine($"Stopping {Name} motor");
+                // Add Event to stop motor
                 IsMoving = false;
             }
         }
@@ -82,12 +103,15 @@ namespace ThreeDimensionPrinter
         public async Task WaitMoveDone(int timeoutMs)
         {
             if (!IsMoving) return;
+
+            // Implement timeout
         }
 
         public void ClearFault()
         {
             if (HasError)
             {
+                Console.WriteLine($"Clearing fault on {Name} motor");
                 HasError = false;
             }
         }

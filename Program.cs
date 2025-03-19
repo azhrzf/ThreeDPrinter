@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using ThreeDimensionPrinter.Hardware;
 
 namespace ThreeDimensionPrinter
 {
@@ -18,14 +19,20 @@ namespace ThreeDimensionPrinter
             {
                 Console.WriteLine("Initializing printer...");
 
-                string filePath = "./Commands/move-commands.json";
+                string filePath = "./move-commands.json";
 
                 if (File.Exists(filePath))
                 {
 
                     Console.WriteLine("Press Enter to start the sequence...");
 
-                    Console.WriteLine("Sequence completed successfully!");
+                    Motor motorX = new Motor("X");
+
+                    motorX.Enable();
+                    await motorX.Move(500, 50, 1000);
+                    motorX.Stop();
+                    motorX.Disable();
+
                 }
                 else
                 {

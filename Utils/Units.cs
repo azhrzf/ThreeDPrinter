@@ -1,4 +1,4 @@
-namespace ThreeDimensionPrinter
+namespace ThreeDimensionPrinter.Utils
 {
     public static class Units
     {

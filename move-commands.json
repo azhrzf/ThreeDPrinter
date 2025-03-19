@@ -1,0 +1,24 @@
+{
+    "commands": [
+        {
+            "type": "move",
+            "params": {
+                "x": 1000,
+                "y": 1000,
+                "z": 100,
+                "speed": 100,
+                "acceleration": 50
+            }
+        },
+        {
+            "type": "move",
+            "params": {
+                "x": 1000,
+                "y": 2000,
+                "z": 100,
+                "speed": 100,
+                "acceleration": 50
+            }
+        }
+    ]
+}
