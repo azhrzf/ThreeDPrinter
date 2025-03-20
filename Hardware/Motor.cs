@@ -7,6 +7,11 @@ namespace ThreeDimensionPrinter.Hardware
 {
     public class Motor : IMotor
     {
+        // Events
+        public event EventHandler<EventArgs> MoveStarted;
+        public event EventHandler<EventArgs> MoveDone;
+        public event EventHandler<EventArgs> MotorError;
+
         // Properties
         public string Name { get; private set; }
         public int Position { get; private set; } // In counts
@@ -18,10 +23,8 @@ namespace ThreeDimensionPrinter.Hardware
         public bool IsMoving { get; private set; }
         public bool HasError { get; private set; }
 
-        // Events
-        public event EventHandler<EventArgs> MoveStarted;
-        public event EventHandler<EventArgs> MoveDone;
-        public event EventHandler<EventArgs> MotorError;
+        private readonly Random _random = new Random(); // For simulation
+        private CancellationTokenSource _moveCts;
 
         public Motor(string name)
         {
@@ -75,9 +78,20 @@ namespace ThreeDimensionPrinter.Hardware
 
             Console.WriteLine($"{Name} moving to {destination} at speed {speed}, acceleration {accel}");
 
+            _moveCts = new CancellationTokenSource();
+            MoveStarted?.Invoke(this, EventArgs.Empty);
+
             try
             {
+                // Simulate movement time based on distance and speed
+                int distance = Math.Abs(destination - Position);
+                int simulatedTimeMs = (int)(distance / speed * 1000);
 
+                // Add some randomness for simulation
+                simulatedTimeMs += _random.Next(0, 100);
+
+                await Task.Delay(simulatedTimeMs, _moveCts.Token);
+                Position = destination;
             }
             catch (TaskCanceledException)
             {
@@ -86,7 +100,7 @@ namespace ThreeDimensionPrinter.Hardware
             finally
             {
                 IsMoving = false;
-                // Add Event to notify move done
+                MoveDone?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -95,7 +109,7 @@ namespace ThreeDimensionPrinter.Hardware
             if (IsMoving)
             {
                 Console.WriteLine($"Stopping {Name} motor");
-                // Add Event to stop motor
+                _moveCts?.Cancel();
                 IsMoving = false;
             }
         }
@@ -104,7 +118,27 @@ namespace ThreeDimensionPrinter.Hardware
         {
             if (!IsMoving) return;
 
-            // Implement timeout
+            // TimeoutTask will complete after the specified timeout period
+            var timeoutTask = Task.Delay(timeoutMs);
+
+            // Manual task that will be completed when the motor finishes moving
+            var tcs = new TaskCompletionSource<bool>();
+
+            // This method is called when the MoveDone event occurs.
+            void OnMoveDone(object sender, EventArgs e)
+            {
+                // Unsubscribes from the event to prevent multiple calls.
+                MoveDone -= OnMoveDone;
+                tcs.TrySetResult(true);
+            }
+
+            MoveDone += OnMoveDone;
+
+            if (await Task.WhenAny(tcs.Task, timeoutTask) == timeoutTask)
+            {
+                MoveDone -= OnMoveDone;
+                throw new TimeoutException($"{Name} movement did not complete within timeout");
+            }
         }
 
         public void ClearFault()

@@ -2,14 +2,14 @@ namespace ThreeDimensionPrinter.Utils
 {
     public static class Units
     {
-        public static double CountToNm(int count)
+        public static double CountToMm(int count)
         {
             return count * 0.2;
         }
 
-        public static int NmToCount(double nm)
+        public static int MmToCount(double mm)
         {
-            return (int)(nm / 0.2);
+            return (int)(mm / 0.2);
         }
     }
 }

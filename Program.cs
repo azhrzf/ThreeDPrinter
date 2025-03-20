@@ -1,9 +1,5 @@
 ﻿using System;
-using System.IO;
-using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using ThreeDimensionPrinter.Hardware;
 
 namespace ThreeDimensionPrinter
@@ -12,32 +8,31 @@ namespace ThreeDimensionPrinter
     {
         static async Task Main(string[] args)
         {
-            Console.WriteLine("3D Printer Controller");
-            Console.WriteLine("=====================");
+            Console.WriteLine("3D Printer Motor Test");
+            Console.WriteLine("====================");
+            Console.WriteLine();
+
+            MotorFactory.VendorType xMotor = MotorFactory.VendorType.VendorA;
+            MotorFactory.VendorType yMotor = MotorFactory.VendorType.VendorA;
+            MotorFactory.VendorType zMotor = MotorFactory.VendorType.VendorB;
+            var printer = new ThreeAxisPrinter(xMotor, yMotor, zMotor);
 
             try
             {
                 Console.WriteLine("Initializing printer...");
+                printer.Initialize();
 
-                string filePath = "./move-commands.json";
+                Console.WriteLine("Moving to position (10, 0, 0)...");
+                await printer.Move(10, 0, 0);
 
-                if (File.Exists(filePath))
-                {
+                Console.WriteLine("Moving to position (10, 10, 0)...");
+                await printer.Move(10, 10, 0);
 
-                    Console.WriteLine("Press Enter to start the sequence...");
+                Console.WriteLine("Moving to position (10, 10, 5)...");
+                await printer.Move(10, 10, 5);
 
-                    Motor motorX = new Motor("X");
-
-                    motorX.Enable();
-                    await motorX.Move(500, 50, 1000);
-                    motorX.Stop();
-                    motorX.Disable();
-
-                }
-                else
-                {
-                    Console.WriteLine("File not found!");
-                }
+                Console.WriteLine("Moving to position (0, 0, 0)...");
+                await printer.Move(0, 0, 0);
             }
             catch (Exception ex)
             {
@@ -45,6 +40,7 @@ namespace ThreeDimensionPrinter
             }
             finally
             {
+                await printer.Shutdown();
                 Console.WriteLine("Press any key to exit...");
                 Console.ReadKey();
             }
