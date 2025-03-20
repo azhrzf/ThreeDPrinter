@@ -33,17 +33,25 @@ namespace ThreeDimensionPrinter.Hardware
 
             Config = new PrinterConfig();
 
-            // WIRE UP ERROR EVENTS
+            // Wire up error events
+            _xMotor.MotorError += (s, e) => Console.WriteLine("X-axis motor error detected!");
+            _yMotor.MotorError += (s, e) => Console.WriteLine("Y-axis motor error detected!");
+            _zMotor.MotorError += (s, e) => Console.WriteLine("Z-axis motor error detected!");
         }
 
-        public void Initialize()
+        public async Task Initialize()
         {
             XActuator.Enable();
             YActuator.Enable();
             ZActuator.Enable();
             Console.WriteLine("\n");
 
-            // SET TO 0 FIRST
+            // Home all axes
+            await Task.WhenAll(
+                XActuator.Move(Config.Speed, Config.Acceleration, 0),
+                YActuator.Move(Config.Speed, Config.Acceleration, 0),
+                ZActuator.Move(Config.Speed, Config.Acceleration, 0)
+            );
         }
 
         public async Task Move(double targetX, double targetY, double targetZ)
@@ -106,6 +114,7 @@ namespace ThreeDimensionPrinter.Hardware
             // Move to safe position and disable motors
             try
             {
+                Console.WriteLine("\n");
                 await Move(0, 0, 0);
             }
             catch
@@ -114,6 +123,7 @@ namespace ThreeDimensionPrinter.Hardware
             }
             finally
             {
+                Console.WriteLine("\n");
                 XActuator.Disable();
                 YActuator.Disable();
                 ZActuator.Disable();

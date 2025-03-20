@@ -20,19 +20,19 @@ namespace ThreeDimensionPrinter
             try
             {
                 Console.WriteLine("Initializing printer...");
-                printer.Initialize();
+                await printer.Initialize();
 
-                Console.WriteLine("Moving to position (10, 0, 0)...");
-                await printer.Move(10, 0, 0);
+                Console.WriteLine("\nMoving to position (10, 10, 10)...");
+                await printer.Move(10, 10, 10);
 
-                Console.WriteLine("Moving to position (10, 10, 0)...");
-                await printer.Move(10, 10, 0);
+                Console.WriteLine("\nMoving to position (20, 20, 20)...");
+                await printer.Move(20, 20, 20);
 
-                Console.WriteLine("Moving to position (10, 10, 5)...");
-                await printer.Move(10, 10, 5);
+                Console.WriteLine("\nMoving to position (25, 25, 25)...");
+                await printer.Move(25, 25, 25);
 
-                Console.WriteLine("Moving to position (0, 0, 0)...");
-                await printer.Move(0, 0, 0);
+                Console.WriteLine("\nMoving to position (45, 45, 45)...");
+                await printer.Move(45, 45, 45);
             }
             catch (Exception ex)
             {
