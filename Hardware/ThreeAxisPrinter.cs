@@ -17,6 +17,25 @@ namespace ThreeDimensionPrinter.Hardware
 
         public PrinterConfig Config { get; private set; }
 
+        public ThreeAxisPrinter()
+        {
+            // Use the default vendor (VendorA) for all motors
+            _xMotor = MotorFactory.CreateMotor("X", MotorFactory.VendorType.VendorA);
+            _yMotor = MotorFactory.CreateMotor("Y", MotorFactory.VendorType.VendorA);
+            _zMotor = MotorFactory.CreateMotor("Z", MotorFactory.VendorType.VendorB);
+
+            XActuator = new Actuator("X", _xMotor);
+            YActuator = new Actuator("Y", _yMotor);
+            ZActuator = new Actuator("Z", _zMotor);
+
+            Config = new PrinterConfig();
+
+            // Wire up error events
+            _xMotor.MotorError += (s, e) => Console.WriteLine("X-axis motor error detected!");
+            _yMotor.MotorError += (s, e) => Console.WriteLine("Y-axis motor error detected!");
+            _zMotor.MotorError += (s, e) => Console.WriteLine("Z-axis motor error detected!");
+        }
+
         // Constructor that allows specifying vendor types
         public ThreeAxisPrinter(
             MotorFactory.VendorType xVendor,
@@ -114,7 +133,6 @@ namespace ThreeDimensionPrinter.Hardware
             // Move to safe position and disable motors
             try
             {
-                Console.WriteLine("\n");
                 await Move(0, 0, 0);
             }
             catch
@@ -123,7 +141,6 @@ namespace ThreeDimensionPrinter.Hardware
             }
             finally
             {
-                Console.WriteLine("\n");
                 XActuator.Disable();
                 YActuator.Disable();
                 ZActuator.Disable();
