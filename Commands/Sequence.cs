@@ -10,9 +10,12 @@ namespace ThreeDimensionPrinter.Commands
 {
     public class Sequence
     {
+        // _printer is an instance of the ThreeAxisPrinter class.
         private readonly ThreeAxisPrinter _printer;
         private List<PrinterCommand> _commands;
         private bool _isRunning;
+        // A CancellationTokenSource is a class in C# that  generate cancellation tokens, which can be used to signal to operations that they should be canceled.
+        // A cancellation token source for stopping operations.
         private CancellationTokenSource _sequenceCts;
 
         public Sequence(ThreeAxisPrinter printer)
@@ -22,8 +25,10 @@ namespace ThreeDimensionPrinter.Commands
             _isRunning = false;
         }
 
+        // Asynchronously loads a sequence of commands from a file
         public async Task LoadSequence(string filePath)
         {
+            // Asynchronously opens a text file, reads all the text in the file, and then closes the file.
             string json = await File.ReadAllTextAsync(filePath);
             _commands = DeserializeCommands(json);
             Console.WriteLine($"Loaded {_commands.Count} commands");
